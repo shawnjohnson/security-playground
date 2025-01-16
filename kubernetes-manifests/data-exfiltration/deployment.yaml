@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: secplay
 
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,7 +45,6 @@ spec:
         - containerPort: 8080
         securityContext:
           privileged: true
-
 ---
 apiVersion: v1
 kind: Service
@@ -60,7 +60,6 @@ spec:
   selector:
     app: security-playground
   type: LoadBalancer
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -80,20 +79,21 @@ spec:
         app: appdb
     spec:
       affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: kubernetes.io/arch
-                  operator: In
-                  values:
-                  - amd64
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
       containers:
       - name: appdb
         image: aa8y/postgres-dataset:latest
         ports:
         - containerPort: 5432
-
+        securityContext:
+          runAsUser: 1000
 ---
 apiVersion: v1
 kind: Service
